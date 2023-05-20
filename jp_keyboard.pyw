@@ -315,14 +315,12 @@ class var:
 
 
 # Generate Local Functions
-hirigana = [(i, "lambda: mora_to_jp_character('" + i +
-             "', '" + var.hirigana_dict[i] + "')") for i in var.hirigana_dict]
-katakana = [(i, "lambda: mora_to_jp_character('" + i +
-             "', '" + var.katakana_dict[i] + "')") for i in var.katakana_dict]
+hirigana = [(i, "lambda: mora_to_jp_character('" + i + "', '" + var.hirigana_dict[i] + "')") for i in var.hirigana_dict]
+katakana = [(i, "lambda: mora_to_jp_character('" + i + "', '" + var.katakana_dict[i] + "')") for i in var.katakana_dict]
 
 
-# Given a mora and its translation, delete the mora characters and add the translation
-def mora_to_jp_character(mora, jp_character):
+
+def mora_to_jp_character(mora, jp_character): # Given a mora and its translation, delete the mora characters and add the translation
     for i in range(len(mora)+1):
         keyboard.send('backspace')
     keyboard.write(jp_character)
