@@ -6,382 +6,223 @@ class var:
     katakana_mode = False  # Which language to translate
     translate_bool = True  # Whether or not to translate
 
-    hirigana_dict = {
-        # Monographs
-        'a': 'あ',
-        'i': 'い',
-        'u': 'う',
-        'e': 'え',
-        'o': 'お',
-        'ka': 'か',
-        'ki': 'き',
-        'ku': 'く',
-        'ke': 'け',
-        'ko': 'こ',
-        'sa': 'さ',
-        'si': 'し',
-        'shi': 'し',
-        'su': 'す',
-        'se': 'せ',
-        'so': 'そ',
-        'ta': 'た',
-        'ti': 'ち',
-        'chi': 'ち',
-        'tu': 'つ',
-        'tsu': 'つ',
-        'te': 'て',
-        'to': 'と',
-        'na': 'な',
-        'ni': 'に',
-        'nu': 'ぬ',
-        'ne': 'ね',
-        'no': 'の',
-        'ha': 'は',
-        'hi': 'ひ',
-        'hu': 'ふ',
-        'fu': 'ふ',
-        'he': 'へ',
-        'ho': 'ほ',
-        'ma': 'ま',
-        'mi': 'み',
-        'mu': 'む',
-        'me': 'め',
-        'mo': 'も',
-        'ya': 'や',
-        'yu': 'ゆ',
-        'yo': 'よ',
-        'ra': 'ら',
-        'ri': 'り',
-        'ru': 'る',
-        're': 'れ',
-        'ro': 'ろ',
-        'wa': 'わ',
-        'wi': 'ゐ',
-        'we': 'ゑ',
-        'wo': 'を',
-        'n': 'ん',
-
-        # Monographs with Diacratics
-        'ga': 'が',
-        'gi': 'ぎ',
-        'gu': 'ぐ',
-        'ge': 'げ',
-        'go': 'ご',
-        'za': 'ざ',
-        'zi': 'じ',
-        'zu': 'ず',
-        'ze': 'ぜ',
-        'zo': 'ぞ',
-        'da': 'だ',
-        'di': 'ぢ',
-        'ji': 'じ',
-        'Ji': 'ぢ',
-        'du': 'づ',
-        'zu': 'づ',
-        'de': 'で',
-        'do': 'ど',
-        'ba': 'ば',
-        'bi': 'び',
-        'bu': 'ぶ',
-        'be': 'べ',
-        'bo': 'ぼ',
-        'pa': 'ぱ',
-        'pi': 'ぴ',
-        'pu': 'ぷ',
-        'pe': 'ぺ',
-        'po': 'ぽ',
-
+    translation_dict = {
+        # Monographs 
+        'a': ['あ', 'ア'],
+        'i': ['い', 'イ'],
+        'u': ['う', 'ウ'],
+        'e': ['え', 'エ'],
+        'o': ['お', 'オ'],
+        'ka': ['か', 'カ'],
+        'ki': ['き', 'キ'],
+        'ku': ['く', 'ク'],
+        'ke': ['け', 'ケ'],
+        'ko': ['こ', 'コ'],
+        'sa': ['さ', 'サ'],
+        'si': ['し', 'シ'],
+        'shi': ['し', 'シ'],
+        'su': ['す', 'ス'],
+        'se': ['せ', 'セ'],
+        'so': ['そ', 'ソ'],
+        'ta': ['た', 'タ'],
+        'ti': ['ち', 'チ'],
+        'chi': ['ち', 'チ'],
+        'tu': ['つ', 'ツ'],
+        'tsu': ['つ', 'ツ'],
+        'te': ['て', 'テ'],
+        'to': ['と', 'ト'],
+        'na': ['な', 'ナ'],
+        'ni': ['に', 'ニ'],
+        'nu': ['ぬ', 'ヌ'],
+        'ne': ['ね', 'ネ'],
+        'no': ['の', 'ノ'],
+        'ha': ['は', 'ハ'],
+        'hi': ['ひ', 'ヒ'],
+        'hu': ['ふ', 'フ'],
+        'fu': ['ふ', 'フ'],
+        'he': ['へ', 'ヘ'],
+        'ho': ['ほ', 'ホ'],
+        'ma': ['ま', 'マ'],
+        'mi': ['み', 'ミ'],
+        'mu': ['む', 'ム'],
+        'me': ['め', 'メ'],
+        'mo': ['も', 'モ'],
+        'ya': ['や', 'ヤ'],
+        'yu': ['ゆ', 'ユ'],
+        'yo': ['よ', 'ヨ'],
+        'ra': ['ら', 'ラ'],
+        'ri': ['り', 'リ'],
+        'ru': ['る', 'ル'],
+        're': ['れ', 'レ'],
+        'ro': ['ろ', 'ロ'],
+        'wa': ['わ', 'ワ'],
+        'wi': ['ゐ', 'ヰ'],
+        'we': ['ゑ', 'ヱ'],
+        'wo': ['を', 'ヲ'],
+        'n': ['ん', 'ン'],
+        
+        # Monographs with diacratics
+        'ga': ['が', 'ガ'],
+        'gi': ['ぎ', 'ギ'],
+        'gu': ['ぐ', 'グ'],
+        'ge': ['げ', 'ゲ'],
+        'go': ['ご', 'ゴ'],
+        'za': ['ざ', 'ザ'],
+        'zi': ['じ', 'ジ'],
+        'zu': ['ず', 'ズ'],
+        'ze': ['ぜ', 'ゼ'],
+        'zo': ['ぞ', 'ゾ'],
+        'da': ['だ', 'ダ'],
+        'di': ['ぢ', 'ヂ'],
+        'ji': ['じ', 'ジ'],
+        'Ji': ['ぢ', 'ヂ'],
+        'du': ['づ', 'ヅ'],
+        'tzu': ['づ', 'ヅ'],
+        'de': ['で', 'デ'],
+        'do': ['ど', 'ド'],
+        'ba': ['ば', 'バ'],
+        'bi': ['び', 'ビ'],
+        'bu': ['ぶ', 'ブ'],
+        'be': ['べ', 'ベ'],
+        'bo': ['ぼ', 'ボ'],
+        'pa': ['ぱ', 'パ'],
+        'pi': ['ぴ', 'ピ'],
+        'pu': ['ぷ', 'プ'],
+        'pe': ['ぺ', 'ペ'],
+        'po': ['ぽ', 'ポ'],
+        
         # Digraphs
-        'kya': 'きゃ',
-        'kyu': 'きゅ',
-        'kyo': 'きょ',
-        'sha': 'しゃ',
-        'shu': 'しゅ',
-        'sho': 'しょ',
-        'cha': 'ちゃ',
-        'chu': 'ちゅ',
-        'cho': 'ちょ',
-        'nya': 'にゃ',
-        'nyu': 'にゅ',
-        'nyo': 'にょ',
-        'hya': 'ひゃ',
-        'hyu': 'ひゅ',
-        'hyo': 'ひょ',
-        'mya': 'みゃ',
-        'myu': 'みゅ',
-        'myo': 'みょ',
-        'rya': 'りゃ',
-        'ryu': 'りゅ',
-        'ryo': 'りょ',
-        'gya': 'ぎゃ',
-
-        # Digraphs with Diacratics
-        'gyu': 'ぎゅ',
-        'gyo': 'ぎょ',
-        'shya': 'じゃ',
-        'shyu': 'じゅ',
-        'shyo': 'じょ',
-        'chya': 'ぢゃ',
-        'chyu': 'ぢゅ',
-        'chyo': 'ぢょ',
-        'ja': 'じゃ',
-        'ju': 'じゅ',
-        'jo': 'じょ',
-        'Ja': 'ぢゃ',
-        'Ju': 'ぢゅ',
-        'Jo': 'ぢょ',
-        'bya': 'びゃ',
-        'byu': 'びゅ',
-        'byo': 'びょ',
-        'pya': 'ぴゃ',
-        'pyu': 'ぴゅ',
-        'pyo': 'ぴょ',
-
+        'kya': ['きゃ', 'キャ'],
+        'kyu': ['きゅ', 'キュ'],
+        'kyo': ['きょ', 'キョ'],
+        'sha': ['しゃ', 'シャ'],
+        'shu': ['しゅ', 'シュ'],
+        'sho': ['しょ', 'ショ'],
+        'cha': ['ちゃ', 'チャ'],
+        'chu': ['ちゅ', 'チュ'],
+        'cho': ['ちょ', 'チョ'],
+        'nya': ['にゃ', 'ニャ'],
+        'nyu': ['にゅ', 'ニュ'],
+        'nyo': ['にょ', 'ニョ'],
+        'hya': ['ひゃ', 'ヒャ'],
+        'hyu': ['ひゅ', 'ヒュ'],
+        'hyo': ['ひょ', 'ヒョ'],
+        'mya': ['みゃ', 'ミャ'],
+        'myu': ['みゅ', 'ミュ'],
+        'myo': ['みょ', 'ミョ'],
+        'rya': ['りゃ', 'リャ'],
+        'ryu': ['りゅ', 'リュ'],
+        'ryo': ['りょ', 'リョ'],
+        
+        # Digraphs with diacratics
+        'gya': ['ぎゃ', 'ギャ'],
+        'gyu': ['ぎゅ', 'ギュ'],
+        'gyo': ['ぎょ', 'ギョ'],
+        'shya': ['じゃ', 'ジャ'],
+        'shyu': ['じゅ', 'ジュ'],
+        'shyo': ['じょ', 'ジョ'],
+        'chya': ['ぢゃ', 'ヂャ'],
+        'chyu': ['ぢゅ', 'ヂュ'],
+        'chyo': ['ぢょ', 'ヂョ'],
+        'ja': ['じゃ', 'ジャ'],
+        'ju': ['じゅ', 'ジュ'],
+        'jo': ['じょ', 'ジョ'],
+        'bya': ['びゃ', 'ビャ'],
+        'byu': ['びゅ', 'ビュ'],
+        'byo': ['びょ', 'ビョ'],
+        'pya': ['ぴゃ', 'ピャ'],
+        'pyu': ['ぴゅ', 'ピュ'],
+        'pyo': ['ぴょ', 'ピョ'],
+        
         # Punctuation
-        '.': '。',
-        ',': '、',
-        '-': 'ー',
+        '.': ['。', '。'],
+        ',': ['、', '、'],
+        '-': ['ー', 'ー'],
+        '[]': ['「」', '「」'],
+        '[': ['「', '「'],
+        ']': ['」', '」'],
 
-        # Diacratic Marks
-        '~ya': 'ゃ',
-        '~yu': 'ゅ',
-        '~yo': 'ょ',
-        'yA': 'ゃ',
-        'yU': 'ゅ',
-        'yO': 'ょ',
+        # Diacratic symbols (yoon)
+        '~ya': ['ゃ', 'ャ'],
+        '~yu': ['ゅ', 'ュ'],
+        '~yo': ['ょ', 'ョ'],
+        '~': ['っ', 'ッ'],
 
-        # Common words
-        'Wa': 'は',
-        'desu': 'です',
-        'hai': 'はい',
-        'iie': 'いいえ',
-        'nani': 'なに',
-        'koko': 'ここ',
-        'soko': 'そこ',
-        'doko': 'どこ',
-        'sore': 'それ',
-        'kore': 'これ',
-        'sono': 'その',
-        'kono': 'この',
-        'san': 'さん',
-        'kun': 'くん',
+        # Common words (over 2 character)
+        'iie': ['いいえ'],
+        
+        # Kanji
+        # Numbers
+        '/ichi': ['一'],
+        '/ni': ['二'],
+        '/san': ['三'],
+        '/yon': ['四'],
+        '/go': ['五'],
+        '/roku': ['六'],
+        '/nana': ['七'], '/shichi': ['七'], 
 
-    }
+        # Common 
+        '/ai': ['愛'],
+        '/hito': ['人'],
+        '/hon': ['本'],
+        '/watashi': ['私'],
+        '/imouto': ['妹'],
+        '/haha': ['母'],
+        '/chichi': ['父'],
+        '/mi': ['見'],
+        '/yo': ['読'], '/satoru': ['読'],    
+        '/ji': ['時'], '/toki': ['時'],
 
-    katakana_dict = {
-        # Monographs
-        'a': 'ア',
-        'i': 'イ',
-        'u': 'ウ',
-        'e': 'エ',
-        'o': 'オ',
-        'ka': 'カ',
-        'ki': 'キ',
-        'ku': 'ク',
-        'ke': 'ケ',
-        'ko': 'コ',
-        'sa': 'サ',
-        'si': 'シ',
-        'shi': 'シ',
-        'su': 'ス',
-        'se': 'セ',
-        'so': 'ソ',
-        'ta': 'タ',
-        'ti': 'チ',
-        'chi': 'チ',
-        'tu': 'ツ',
-        'tsu': 'ツ',
-        'te': 'テ',
-        'to': 'ト',
-        'na': 'ナ',
-        'ni': 'ニ',
-        'nu': 'ヌ',
-        'ne': 'ネ',
-        'no': 'ノ',
-        'ha': 'ハ',
-        'hi': 'ヒ',
-        'hu': 'フ',
-        'fu': 'フ',
-        'he': 'ヘ',
-        'ho': 'ホ',
-        'ma': 'マ',
-        'mi': 'ミ',
-        'mu': 'ム',
-        'me': 'メ',
-        'mo': 'モ',
-        'ya': 'ヤ',
-        'yu': 'ユ',
-        'yo': 'ヨ',
-        'ra': 'ラ',
-        'ri': 'リ',
-        'ru': 'ル',
-        're': 'レ',
-        'ro': 'ロ',
-        'wa': 'ワ',
-        'wi': 'ヰ',
-        'we': 'ヱ',
-        'wo': 'ヲ',
-        'n': 'ン',
+        # Cities
+        '/nihon': ['日本'],
+        '/tokyo': ['東京'],
+        '/kyoto': ['京都'],
 
-        # Monographs with Diacratics
-        'ga': 'ガ',
-        'gi': 'ギ',
-        'gu': 'グ',
-        'ge': 'ゲ',
-        'go': 'ゴ',
-        'za': 'ザ',
-        'zi': 'ジ',
-        'zu': 'ズ',
-        'ze': 'ゼ',
-        'zo': 'ゾ',
-        'da': 'ダ',
-        'di': 'ヂ',
-        'ji': 'ジ',
-        'Ji': 'ヂ',
-        'du': 'ヅ',
-        'zu': 'ヅ',
-        'de': 'デ',
-        'do': 'ド',
-        'ba': 'バ',
-        'bi': 'ビ',
-        'bu': 'ブ',
-        'be': 'ベ',
-        'bo': 'ボ',
-        'pa': 'パ',
-        'pi': 'ピ',
-        'pu': 'プ',
-        'pe': 'ペ',
-        'po': 'ポ',
-
-        # Digraphs
-        'kya': 'キャ',
-        'kyu': 'キュ',
-        'kyo': 'キョ',
-        'sha': 'シャ',
-        'shu': 'シュ',
-        'sho': 'ショ',
-        'cha': 'チャ',
-        'chu': 'チュ',
-        'cho': 'チョ',
-        'nya': 'ニャ',
-        'nyu': 'ニュ',
-        'nyo': 'ニョ',
-        'hya': 'ヒャ',
-        'hyu': 'ヒュ',
-        'hyo': 'ヒョ',
-        'mya': 'ミャ',
-        'myu': 'ミュ',
-        'myo': 'ミョ',
-        'rya': 'リャ',
-        'ryu': 'リュ',
-        'ryo': 'リョ',
-
-        # Digraphs with Diacratics
-        'gya': 'ギャ',
-        'gyu': 'ギュ',
-        'gyo': 'ギョ',
-        'shya': 'ジャ',
-        'shyu': 'ジュ',
-        'shyo': 'ジョ',
-        'chya': 'ヂャ',
-        'chyu': 'ヂュ',
-        'chyo': 'ヂョ',
-        'ja': 'ジャ',
-        'ju': 'ジュ',
-        'jo': 'ジョ',
-        'Ja': 'ヂャ',
-        'Ju': 'ヂュ',
-        'Jo': 'ヂョ',
-        'bya': 'ビャ',
-        'byu': 'ビュ',
-        'byo': 'ビョ',
-        'pya': 'ピャ',
-        'pyu': 'ピュ',
-        'pyo': 'ピョ',
-
-        # Punctuation
-        '.': '。',
-        ',': '、',
-        '-': 'ー',
-
-        # Diacratic Marks
-        '~ya': 'ャ',
-        '~yu': 'ュ',
-        '~yo': 'ョ',
-        'yA': 'ャ',
-        'yU': 'ュ',
-        'yO': 'ョ',
+        # Misc
+        '/yama': ['山'],
+        '/guchi': ['口'],
     }
 
 
+
+
+
+# Add combo translations to the main set of word listeners
+combo_translations = {i + a: [var.translation_dict[i][0] + var.translation_dict[a][0], var.translation_dict[i][1] + var.translation_dict[a][1]] for i in var.translation_dict if len(var.translation_dict[i]) > 1 for a in var.translation_dict if len(var.translation_dict[a]) > 1}
+var.translation_dict = dict(combo_translations, **var.translation_dict)
 # Generate Local Functions
-hirigana = [(i, "lambda: mora_to_jp_character('" + i + "', '" + var.hirigana_dict[i] + "')") for i in var.hirigana_dict]
-katakana = [(i, "lambda: mora_to_jp_character('" + i + "', '" + var.katakana_dict[i] + "')") for i in var.katakana_dict]
+translations = [(i, "lambda: mora_to_jp_character('" + i + "', " + str(var.translation_dict[i]) + ")") for i in var.translation_dict]
 
+# Given a mora and its translation, delete the mora characters and add the translation
+def mora_to_jp_character(mora, jp_symbols):
+    if var.translate_bool == True:
+        for i in range(len(mora)+1): keyboard.send('backspace')
+        if len(jp_symbols) == 1: keyboard.write(jp_symbols[0])
+        elif var.hirigana_mode == True: keyboard.write(jp_symbols[0])
+        elif var.katakana_mode == True: keyboard.write(jp_symbols[1])
 
-
-def mora_to_jp_character(mora, jp_character): # Given a mora and its translation, delete the mora characters and add the translation
-    for i in range(len(mora)+1):
-        keyboard.send('backspace')
-    keyboard.write(jp_character)
-
-
-def switch():  # Switch between hirigana and katakana translation modes. KeyError is ignored because the listener dictionary can be emptied by the enable/disable function
+def switch():  # Switch between hirigana and katakana translation modes. 
     if var.hirigana_mode == True:
-        try:
-            var.hirigana_mode = False
-            var.katakana_mode = True
-            for i in hirigana:
-                keyboard.remove_word_listener(i[0])
-            for i in katakana:
-                keyboard.add_word_listener(i[0], eval(i[1]))
-        except KeyError:
-            pass
+        var.hirigana_mode = False
+        var.katakana_mode = True
     elif var.katakana_mode == True:
-        try:
-            var.katakana_mode = False
-            var.hirigana_mode = True
-            for i in katakana:
-                keyboard.remove_word_listener(i[0])
-            for i in hirigana:
-                keyboard.add_word_listener(i[0], eval(i[1]))
-        except KeyError:
-            pass
-    keyboard.send('backspace')
-
+        var.katakana_mode = False
+        var.hirigana_mode = True
+    keyboard.call_later(lambda: keyboard.send('backspace'),delay=.01)
+    
 
 def enable_disable():  # Enable/disable the translation function by emptying the listener dictionaties
     if var.translate_bool == True:
-        try:
-            var.translate_bool = False
-            if var.hirigana_mode == True:
-                for i in hirigana:
-                    keyboard.remove_word_listener(i[0])
-            elif var.katakana_mode == True:
-                for i in katakana:
-                    keyboard.remove_word_listener(i[0])
-            return
-        except KeyError:
-            pass
-    elif var.translate_bool == False:
-        try:
-            var.translate_bool = True
-            if var.hirigana_mode == True:
-                for i in hirigana:
-                    keyboard.add_word_listener(i[0], eval(i[1]))
-            elif var.katakana_mode == True:
-                for i in katakana:
-                    keyboard.add_word_listener(i[0], eval(i[1]))
-            return
-        except KeyError:
-            pass
-
+        var.translate_bool = False
+    elif var.translate_bool == False: 
+        var.translate_bool = True
+            
 
 if var.translate_bool == True:
-    for i in hirigana:  # Initial listener dictionary
+    for i in translations:  # Initialize the listener dictionary
         keyboard.add_word_listener(i[0], eval(i[1]))
 keyboard.add_hotkey(  # Trigger the hirigana/katakana switch
     'shift+space', lambda: switch())
 keyboard.add_hotkey(  # Enable/disable translation while still running the script
     'ctrl+space', lambda: enable_disable())
-keyboard.wait('esc')  # Receiving this input ends the program
+keyboard.wait('esc')  # Receiving this input ends the program 
