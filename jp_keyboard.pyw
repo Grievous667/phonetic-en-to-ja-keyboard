@@ -7,6 +7,7 @@ class var:
     translate_bool = True  # Whether or not to translate
 
     translation_dict = {
+        # Monographs 
         'a': ['あ', 'ア'],
         'i': ['い', 'イ'],
         'u': ['う', 'ウ'],
@@ -59,6 +60,8 @@ class var:
         'we': ['ゑ', 'ヱ'],
         'wo': ['を', 'ヲ'],
         'n': ['ん', 'ン'],
+        
+        # Monographs with diacratics
         'ga': ['が', 'ガ'],
         'gi': ['ぎ', 'ギ'],
         'gu': ['ぐ', 'グ'],
@@ -87,6 +90,8 @@ class var:
         'pu': ['ぷ', 'プ'],
         'pe': ['ぺ', 'ペ'],
         'po': ['ぽ', 'ポ'],
+        
+        # Digraphs
         'kya': ['きゃ', 'キャ'],
         'kyu': ['きゅ', 'キュ'],
         'kyo': ['きょ', 'キョ'],
@@ -108,6 +113,8 @@ class var:
         'rya': ['りゃ', 'リャ'],
         'ryu': ['りゅ', 'リュ'],
         'ryo': ['りょ', 'リョ'],
+        
+        # Digraphs with diacratics
         'gya': ['ぎゃ', 'ギャ'],
         'gyu': ['ぎゅ', 'ギュ'],
         'gyo': ['ぎょ', 'ギョ'],
@@ -135,7 +142,7 @@ class var:
         '[': ['「', '「'],
         ']': ['」', '」'],
 
-        # Diacratic symbols
+        # Diacratic symbols (yoon)
         '~ya': ['ゃ', 'ャ'],
         '~yu': ['ゅ', 'ュ'],
         '~yo': ['ょ', 'ョ'],
