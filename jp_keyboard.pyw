@@ -209,7 +209,7 @@ def switch():  # Switch between hirigana and katakana translation modes.
     keyboard.call_later(lambda: keyboard.send('backspace'),delay=.01)
     
 
-def enable_disable():  # Enable/disable the translation function by emptying the listener dictionaties
+def enable_disable():  # Enable/disable the translation function
     if var.translate_bool == True: var.translate_bool = False
     elif var.translate_bool == False: var.translate_bool = True
         
