@@ -190,20 +190,13 @@ class var:
         '/guchi': ['口'],
     }
 
-
-
-
-
-
 def generate_combo_translations(): # Add combo translations to the main set of word listeners
-    combo_translations = {i + a: [var.translation_dict[i][0] + var.translation_dict[a][0], var.translation_dict[i][1] + var.translation_dict[a][1]] for i in var.translation_dict if len(var.translation_dict[i]) > 1 for a in var.translation_dict if len(var.translation_dict[a]) > 1}
-    var.translation_dict = dict(combo_translations, **var.translation_dict)
+    var.translation_dict = dict({i + a: [var.translation_dict[i][0] + var.translation_dict[a][0], var.translation_dict[i][1] + var.translation_dict[a][1]] for i in var.translation_dict if len(var.translation_dict[i]) > 1 for a in var.translation_dict if len(var.translation_dict[a]) > 1}, **var.translation_dict)
 
 def generate_local_functions(): # Generate Local Functions
     return [(i, "lambda: mora_to_jp_character('" + i + "', " + str(var.translation_dict[i]) + ")") for i in var.translation_dict]
 
-# Given a mora and its translation, delete the mora characters and add the translation
-def mora_to_jp_character(mora, jp_symbols):
+def mora_to_jp_character(mora, jp_symbols): # Given a mora and its translation, delete the mora characters and add the translation
     if var.translate_bool == True:
         for i in range(len(mora)+1): keyboard.send('backspace')
         if len(jp_symbols) == 1: keyboard.write(jp_symbols[0])
@@ -226,6 +219,6 @@ def run():
     for i in translations: keyboard.add_word_listener(i[0], eval(i[1])) # Initialize the listener dictionary
     keyboard.add_hotkey('shift+space', lambda: switch()) # Trigger the hirigana/katakana switch
     keyboard.add_hotkey('ctrl+space', lambda: enable_disable()) # Enable/disable translation while still running the script
-    keyboard.wait('esc')  # Receiving this input ends the program 
+    keyboard.wait('esc') # Receiving this input ends the program 
     exit()
 run()
