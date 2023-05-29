@@ -211,12 +211,8 @@ def mora_to_jp_character(mora, jp_symbols):
         elif var.katakana_mode == True: keyboard.write(jp_symbols[1])
 
 def switch():  # Switch between hirigana and katakana translation modes. 
-    if var.hirigana_mode == True:
-        var.hirigana_mode = False
-        var.katakana_mode = True
-    elif var.katakana_mode == True:
-        var.katakana_mode = False
-        var.hirigana_mode = True
+    if var.hirigana_mode == True: var.hirigana_mode = False; var.katakana_mode = True
+    elif var.katakana_mode == True: var.katakana_mode = False; var.hirigana_mode = True
     keyboard.call_later(lambda: keyboard.send('backspace'),delay=.01)
     
 
