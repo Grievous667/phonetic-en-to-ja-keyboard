@@ -74,10 +74,10 @@ class var:
         'zo': ['ぞ', 'ゾ'],
         'da': ['だ', 'ダ'],
         'di': ['ぢ', 'ヂ'],
+        'dji': ['ぢ', 'ヂ'],
         'ji': ['じ', 'ジ'],
-        'Ji': ['ぢ', 'ヂ'],
         'du': ['づ', 'ヅ'],
-        'tzu': ['づ', 'ヅ'],
+        'dzu': ['づ', 'ヅ'],
         'de': ['で', 'デ'],
         'do': ['ど', 'ド'],
         'ba': ['ば', 'バ'],
@@ -138,9 +138,9 @@ class var:
         '.': ['。', '。'],
         ',': ['、', '、'],
         '-': ['ー', 'ー'],
-        '[]': ['「」', '「」'],
         '[': ['「', '「'],
         ']': ['」', '」'],
+        '[]': ['「」'],
 
         # Diacratic symbols (yoon)
         '~ya': ['ゃ', 'ャ'],
@@ -160,7 +160,14 @@ class var:
         '/go': ['五'],
         '/roku': ['六'],
         '/nana': ['七'], '/shichi': ['七'], 
+        '/hachi': ['八'],
+        '/ku': ['九'], '/kyu': ['九'],
+        '/juu': ['十'],
 
+        '/han': ['半'],
+        '/hyaku': ['百'],
+        '/sen': ['千'],
+        
         # Common 
         '/ai': ['愛'],
         '/hito': ['人'],
@@ -173,7 +180,7 @@ class var:
         '/yo': ['読'], '/satoru': ['読'],    
         '/ji': ['時'], '/toki': ['時'],
 
-        # Cities
+        # Cities / places
         '/nihon': ['日本'],
         '/tokyo': ['東京'],
         '/kyoto': ['京都'],
@@ -187,11 +194,13 @@ class var:
 
 
 
-# Add combo translations to the main set of word listeners
-combo_translations = {i + a: [var.translation_dict[i][0] + var.translation_dict[a][0], var.translation_dict[i][1] + var.translation_dict[a][1]] for i in var.translation_dict if len(var.translation_dict[i]) > 1 for a in var.translation_dict if len(var.translation_dict[a]) > 1}
-var.translation_dict = dict(combo_translations, **var.translation_dict)
-# Generate Local Functions
-translations = [(i, "lambda: mora_to_jp_character('" + i + "', " + str(var.translation_dict[i]) + ")") for i in var.translation_dict]
+
+def generate_combo_translations(): # Add combo translations to the main set of word listeners
+    combo_translations = {i + a: [var.translation_dict[i][0] + var.translation_dict[a][0], var.translation_dict[i][1] + var.translation_dict[a][1]] for i in var.translation_dict if len(var.translation_dict[i]) > 1 for a in var.translation_dict if len(var.translation_dict[a]) > 1}
+    var.translation_dict = dict(combo_translations, **var.translation_dict)
+
+def generate_local_functions(): # Generate Local Functions
+    return [(i, "lambda: mora_to_jp_character('" + i + "', " + str(var.translation_dict[i]) + ")") for i in var.translation_dict]
 
 # Given a mora and its translation, delete the mora characters and add the translation
 def mora_to_jp_character(mora, jp_symbols):
@@ -212,17 +221,15 @@ def switch():  # Switch between hirigana and katakana translation modes.
     
 
 def enable_disable():  # Enable/disable the translation function by emptying the listener dictionaties
-    if var.translate_bool == True:
-        var.translate_bool = False
-    elif var.translate_bool == False: 
-        var.translate_bool = True
-            
-
-if var.translate_bool == True:
-    for i in translations:  # Initialize the listener dictionary
-        keyboard.add_word_listener(i[0], eval(i[1]))
-keyboard.add_hotkey(  # Trigger the hirigana/katakana switch
-    'shift+space', lambda: switch())
-keyboard.add_hotkey(  # Enable/disable translation while still running the script
-    'ctrl+space', lambda: enable_disable())
-keyboard.wait('esc')  # Receiving this input ends the program 
+    if var.translate_bool == True: var.translate_bool = False
+    elif var.translate_bool == False: var.translate_bool = True
+        
+def run():
+    generate_combo_translations()
+    translations = generate_local_functions()
+    for i in translations: keyboard.add_word_listener(i[0], eval(i[1])) # Initialize the listener dictionary
+    keyboard.add_hotkey('shift+space', lambda: switch()) # Trigger the hirigana/katakana switch
+    keyboard.add_hotkey('ctrl+space', lambda: enable_disable()) # Enable/disable translation while still running the script
+    keyboard.wait('esc')  # Receiving this input ends the program 
+    exit()
+run()
