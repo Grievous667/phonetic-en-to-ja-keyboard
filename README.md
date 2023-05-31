@@ -1,4 +1,4 @@
-# phonetic-en-to-jp-keyboard
+# phonetic-en-to-ja-keyboard
 Translate English/Latin syllables to equivelant Japanese Hirigana or Katakana characters
 
 
