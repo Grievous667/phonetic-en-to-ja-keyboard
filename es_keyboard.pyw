@@ -39,7 +39,7 @@ def enable_disable():  # Enable/disable the translation function
         
 def run():
     translations = generate_local_functions()
-    for i in translations: keyboard.add_word_listener(i[0], eval(i[1]), timeout=10, allow_backspace=True, match_suffix=True) # Initialize the listener dictionary
+    for i in translations: keyboard.add_word_listener(i[0], eval(i[1]), timeout=10, match_suffix=True) # Initialize the listener dictionary
     keyboard.add_hotkey('shift+space', lambda: enable_disable()) # Enable/disable translation while still running the script
     keyboard.wait('esc') # Receiving this input ends the program 
     exit()
