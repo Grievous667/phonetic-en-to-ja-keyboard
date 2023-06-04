@@ -1,10 +1,13 @@
 import keyboard
+import time
 
 
 class var:
     hirigana_mode = True  # Which language to translate
     katakana_mode = False  # Which language to translate
     translate_bool = True  # Whether or not to translate
+    keystroke_queue = []
+    working_string = ''
 
     translation_dict = {
         # Monographs 
@@ -59,7 +62,7 @@ class var:
         'wi': ['ゐ', 'ヰ'],
         'we': ['ゑ', 'ヱ'],
         'wo': ['を', 'ヲ'],
-        'n': ['ん', 'ン'],
+        'nn': ['ん', 'ン'],
         
         # Monographs with diacratics
         'ga': ['が', 'ガ'],
@@ -147,78 +150,139 @@ class var:
         '~yu': ['ゅ', 'ュ'],
         '~yo': ['ょ', 'ョ'],
         '~': ['っ', 'ッ'],
-
-        # Common words (over 2 character)
-        'iie': ['いいえ'],
         
-        # Kanji
-        # Numbers
-        '/ichi': ['一'],
-        '/ni': ['二'],
-        '/san': ['三'],
-        '/yon': ['四'],
-        '/go': ['五'],
-        '/roku': ['六'],
-        '/nana': ['七'], '/shichi': ['七'], 
-        '/hachi': ['八'],
-        '/ku': ['九'], '/kyu': ['九'],
-        '/juu': ['十'],
+        '<DOUBLE_CONSONANTS>': {
+            'bb': ['っb', 'ッb'],
+            'cc': ['っc', 'ッc'],
+            'ff': ['っf', 'ッf'],
+            'gg': ['っg', 'ッg'],
+            'hh': ['っh', 'ッh'],
+            'jj': ['っj', 'ッj'],
+            'kk': ['っk', 'ッk'],
+            'mm': ['っm', 'ッm'],
+            'pp': ['っp', 'ッp'],
+            'rr': ['っr', 'ッr'],
+            'ss': ['っs', 'ッs'],
+            'tt': ['っt', 'ッt'],
+            'ww': ['っw', 'ッw'],
+            'yy': ['っy', 'ッy'],
+            'zz': ['っz', 'ッz'],
+        },
+        '<KANJI>': { # Kanji
+            # Numbers
+            '/ichi': ['一'],
+            '/ni': ['二'],
+            '/san': ['三'],
+            '/yon': ['四'],
+            '/go': ['五'],
+            '/roku': ['六'],
+            '/nana': ['七'], '/shichi': ['七'], 
+            '/hachi': ['八'],
+            '/ku': ['九'], '/kyu': ['九'],
+            '/juu': ['十'],
 
-        '/han': ['半'],
-        '/hyaku': ['百'],
-        '/sen': ['千'],
-        
-        # Common 
-        '/ai': ['愛'],
-        '/hito': ['人'],
-        '/hon': ['本'],
-        '/watashi': ['私'],
-        '/imouto': ['妹'],
-        '/haha': ['母'],
-        '/chichi': ['父'],
-        '/mi': ['見'],
-        '/yo': ['読'], '/satoru': ['読'],    
-        '/ji': ['時'], '/toki': ['時'],
+            '/han': ['半'],
+            '/hyaku': ['百'],
+            '/sen': ['千'],
+            
+            # Common 
+            '/hito': ['人'],
+            '/ten': ['天'],
+            '/dai': ['大'], '/oo': ['大'],
+            '/hon': ['本'],
+            '/sai': ['才'],
+            '/chii': ['小'],
+            '/watashi': ['私'],
+            '/imouto': ['妹'],
+            '/haha': ['母'],
+            '/chichi': ['父'],
+            '/mi': ['見'],
+            '/ai': ['愛'],
+            '/toshi': ['歳'],
+            '/yo': ['読'], '/satoru': ['読'],    
+            '/ji': ['時'], '/toki': ['時'],
+            '//go': ['語'],
+            
+            '/manabu': ['学'],
 
-        # Cities / places
-        '/nihon': ['日本'],
-        '/tokyo': ['東京'],
-        '/kyoto': ['京都'],
+            # Full words
+            '/atarashi': ['新しい'],
+            '/furui':['古い'],
+            '/uta':['歌'],
+            '/okiniiri':['お気に入り'],
+            '/subarashii': ['素晴らしい'],
+            '/nihongo': ['日本語'],
 
-        # Misc
-        '/yama': ['山'],
-        '/guchi': ['口'],
+            # Cities / places
+            '/nihon': ['日本'],
+            '/tokyo': ['東京'],
+            '/kyoto': ['京都'],
+
+            # Misc
+            '/yama': ['山'],
+            '/guchi': ['口'],
+        },
     }
 
-def generate_combo_translations(): # Add combo translations to the main set of word listeners
-    var.translation_dict = dict({i + a: [var.translation_dict[i][0] + var.translation_dict[a][0], var.translation_dict[i][1] + var.translation_dict[a][1]] for i in var.translation_dict if len(var.translation_dict[i]) > 1 for a in var.translation_dict if len(var.translation_dict[a]) > 1}, **var.translation_dict)
+def execute_queue(): # Perform queued keystrokes
+    time.sleep(.005)
+    for key in var.keystroke_queue:
+        if key == 'backspace' or key == 'space': keyboard.send(key)
+        else: keyboard.write(key)
+    var.keystroke_queue = []
 
-def generate_local_functions(): # Generate Local Functions
-    return [(i, "lambda: mora_to_jp_character('" + i + "', " + str(var.translation_dict[i]) + ")") for i in var.translation_dict]
+def analyze(wking_string, key_event):
+    if wking_string in var.translation_dict.keys():
+        mora_to_jp_character(wking_string, var.translation_dict[wking_string])
+        return ''
+    elif wking_string in var.translation_dict['<DOUBLE_CONSONANTS>'].keys():
+        mora_to_jp_character(wking_string, var.translation_dict['<DOUBLE_CONSONANTS>'][wking_string])
+        return wking_string[-1]
+    elif wking_string in var.translation_dict['<KANJI>'].keys():
+        if key_event == 'space':
+            var.keystroke_queue.append('backspace')
+            mora_to_jp_character(wking_string, var.translation_dict['<KANJI>'][wking_string])
+            return ''
+        else: return wking_string
+    elif wking_string != '' and key_event == 'space': var.keystroke_queue.append('backspace'); execute_queue(); return ''
+    else: return wking_string
 
-def mora_to_jp_character(mora, jp_symbols): # Given a mora and its translation, delete the mora characters and add the translation
+def mora_to_jp_character(mora, jp_symbols): # Given a mora and its translation, add the appropriate actions to the queue.
     if var.translate_bool == True:
-        for i in range(len(mora)+1): keyboard.send('backspace')
-        if len(jp_symbols) == 1: keyboard.write(jp_symbols[0])
-        elif var.hirigana_mode == True: keyboard.write(jp_symbols[0])
-        elif var.katakana_mode == True: keyboard.write(jp_symbols[1])
+        if type(jp_symbols) == list:
+            for i in range(len(mora)): var.keystroke_queue.append('backspace')
+            if len(jp_symbols) == 1 or var.hirigana_mode == True: var.keystroke_queue.append(jp_symbols[0])
+            elif var.katakana_mode == True: var.keystroke_queue.append(jp_symbols[1])
+        execute_queue()
+        
 
 def switch():  # Switch between hirigana and katakana translation modes. 
     if var.hirigana_mode == True: var.hirigana_mode = False; var.katakana_mode = True
     elif var.katakana_mode == True: var.katakana_mode = False; var.hirigana_mode = True
     keyboard.call_later(lambda: keyboard.send('backspace'),delay=.01)
-    
 
 def enable_disable():  # Enable/disable the translation function
     if var.translate_bool == True: var.translate_bool = False
     elif var.translate_bool == False: var.translate_bool = True
-        
-def run():
-    generate_combo_translations()
-    translations = generate_local_functions()
-    for i in translations: keyboard.add_word_listener(i[0], eval(i[1]), timeout=10) # Initialize the listener dictionary
-    keyboard.add_hotkey('shift+space', lambda: switch()) # Trigger the hirigana/katakana switch
-    keyboard.add_hotkey('ctrl+space', lambda: enable_disable()) # Enable/disable translation while still running the script
-    keyboard.wait('esc') # Receiving this input ends the program 
-    exit()
+    var.working_string = ''
+    var.keystroke_queue = []
+
+def run(switch_hotkey:str='shift+space',enable_disable_hotkey:str='ctrl+space'): 
+    var.working_string = ''
+    keyboard.add_hotkey(switch_hotkey, lambda: switch()) # Trigger the hirigana/katakana switch
+    keyboard.add_hotkey(enable_disable_hotkey, lambda: enable_disable()) # Enable/disable translation while still running the script
+    mainloop()
+
+def mainloop():
+    while True:
+        key_event = keyboard.read_event()
+        if key_event.event_type == 'down':
+            if key_event.name == 'esc': break
+            if var.translate_bool == True and keyboard.is_pressed('ctrl') == False:
+                if len(key_event.name) == 1:
+                    var.working_string += key_event.name
+                    var.working_string = analyze(var.working_string, key_event)
+                elif key_event.name == 'backspace': var.working_string = var.working_string[:-1]
+                elif key_event.name == 'space': analyze(var.working_string, key_event.name); var.working_string = ''
+                else: var.working_string = ''
 run()
