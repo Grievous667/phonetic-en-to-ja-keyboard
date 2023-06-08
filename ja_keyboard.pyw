@@ -359,7 +359,7 @@ class _Language():
                     if _Language.working_string != '': _Language.working_string = _Language.working_string[:-1]; _Language.latin_to_type = _Language.latin_to_type[:-1]
                     elif _Language.working_string == '': keyboard.send(modified_event)
 
-                elif 'ctrl+' in _Language.input_modifiers: keyboard.send(modified_event)
+                elif 'ctrl+' in _Language.input_modifiers: keyboard.send(modified_event) ; return
                 elif len(event.name) == 1 and 'ctrl+' not in _Language.input_modifiers: 
 
                     _Language.working_string += event.name
@@ -391,11 +391,10 @@ class _Language():
 
                 
         elif event.event_type == 'up': 
-            if keyboard.is_modifier(event.name):        
+            if keyboard.is_modifier(event.name):
                 if 'right ' in event.name: event.name = event.name[6:]
-                try: _Language.input_modifiers.remove(event.name + '+')
-                except ValueError: _Language.input_modifiers = []
-            keyboard.send(event.name, False, True)
+                try: _Language.input_modifiers.remove(event.name + '+') 
+                except ValueError: _Language.input_modifiers = [] 
             
                 
 
