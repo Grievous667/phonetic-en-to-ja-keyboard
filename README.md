@@ -1,13 +1,18 @@
 # phonetic-en-to-ja-keyboard
-Translate English/Latin syllables to equivelant Japanese Hirigana or Katakana characters
+Translate English/Latin syllables to equivalent Japanese Hiragana or Katakana characters
 
 
-This program uses the keyboard module to identify when a typed string matches to a Japanese character based on a dictionary of corrosponding phonetic moras or syllables. When a match is identified, the typed string will be replaced with the Japanese character. E.g., typing 'ka' while the program is running will call two backspace keystrokes and then type 'か'. The program can be switched between Hirigana and Katakana via the default hotkey 'shift+space', or can be toggled on/off entirely with 'ctrl+space'. Pressing 'esc' at any time will terminate the program. 
+This program uses the keyboard module (with modifications) to identify when a typed string matches to a Japanese character based on a dictionary of corresponding phonetic moras or syllables. When a match is identified, the typed string will be replaced with the Japanese character. E.g., typing 'ka' while the program is running will call two backspace keystrokes and then type 'か'. The program can be switched between Hiragana and Katakana via the default hotkey 'shift+space', or can be toggled on/off entirely with 'ctrl+space'. Pressing 'esc' at any time will terminate the program. 
 
-Note that for some duplicate phonetic equivalents, what to input for a desired output may not be perfectly intuitive. Looking through the the translation dictionary is reccommended. 
+Note that for some duplicate phonetic equivalents, what to input for a desired output may not be perfectly intuitive. Looking through the translation dictionary is recommended. 
 
-The dictionary can be easily extended for common words, and by adding keys, specific Kanji translations can be supported.
+Kanji translations can be supported - even multiple phonetic equivalents, if the dictionary is configured correctly. To add Kanji keys, prefix the key with '/'. Equivalent translations in the dictionary suffixed by '-' and any other character will be cycled through on subsequent space presses. E.g.:
 
-This branch does away with the word listeners and instead keeps track of a working string according to what is typed. This has the advantage of translating immediately after a mora is matched. Kanji is still supported with mostly the same process as the original branch. 
+KANJI_DICT: {
+  '/go': ['五'],
+  '/go-1': ['語'],
+  }
+  
+Typing '/go' and pressing space with this configuration will first translate, then cycle through each translation key listed. 
 
-There is an issue where very quick or simultaneous inputs are not processed correctly, which I tried to alleviate a bit by using time's sleep function, so there is another import. This band-aid is mostly optional, as this issue isn't really present when typing normally, but holding down keys, for example, fails to translate properly. 
+This branch works by recording suppressed physical keystrokes, and matching the recorded bit to the translation dictionary. This means that Latin characters will not be typed at all except after a configurable delay (default 1 second), when any Latin characters left hanging will be typed for convenience/typo identification. In order to accomplish this, I had to edit the keyboard module, so for installation, replace the '__init__.py' file in the keyboard module with the one provided in this repository.
