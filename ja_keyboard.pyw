@@ -358,6 +358,7 @@ class _Language():
 
             else:
                 _Language.typed_latin = ''
+                _Language.latin_to_type = ''
                 if modified_event == gv.switch_hotkey: 
                     switch()
                 elif modified_event == gv.toggle_hotkey:   
