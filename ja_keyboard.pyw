@@ -336,12 +336,12 @@ class _Language():
             
     
     def process_input(event):
-        modified_event = ''.join(_Language.input_modifiers) + event.name 
+        if keyboard.is_modifier(event.name): modified_event = event.name
+        else: modified_event = ''.join(_Language.input_modifiers) + event.name 
         if event.event_type == 'down':
             if keyboard.is_modifier(event.name): 
                 if 'right ' in event.name: event.name = event.name[6:]
                 _Language.input_modifiers.append(event.name + '+')
-                keyboard.send(event.name, True, False)
                 return
             else:
                 if event.name != 'space': _Language.reset_kanji()
@@ -351,7 +351,7 @@ class _Language():
                 elif modified_event == gv.toggle_hotkey: TranslationAPI.enable_disable()  ; return
 
                 elif modified_event == 'enter':
-                    if _Language.working_string == '': keyboard.send(modified_event, True, False)
+                    if _Language.working_string == '': keyboard.send(modified_event)
                     else: keyboard.write(_Language.latin_to_type) ; _Language.set_working_string('', True) ; _Helpers.reset_latin()
 
                 elif modified_event == 'backspace':
@@ -359,7 +359,7 @@ class _Language():
                     if _Language.working_string != '': _Language.working_string = _Language.working_string[:-1]; _Language.latin_to_type = _Language.latin_to_type[:-1]
                     elif _Language.working_string == '': keyboard.send(modified_event)
 
-                elif 'ctrl+' in _Language.input_modifiers: keyboard.send(modified_event) ; return
+                elif 'ctrl+' in _Language.input_modifiers: keyboard.send(modified_event, do_release=True) ; return 
                 elif len(event.name) == 1 and 'ctrl+' not in _Language.input_modifiers: 
 
                     _Language.working_string += event.name
@@ -381,15 +381,14 @@ class _Language():
                 elif modified_event == 'space' or modified_event == 'ctrl+backspace':
                     if _Language.working_string == '': keyboard.send(modified_event)
                     else: _Language.set_working_string('', True) ; _Helpers.reset_latin()   
-                elif len(event.name) > 1: keyboard.send(event.name) ; _Helpers.reset_latin() ; return     
+                elif len(event.name) > 1: keyboard.send(event.name) ; _Language.set_working_string('', True) ; _Helpers.reset_latin() ; return     
                 else:
                     _Helpers.reset_latin() 
-    
+                     
                 if _Helpers.timer_thread != None and _Language.input_modifiers == []:
                     _Helpers.timer_thread.cancel()
                 _Helpers.start_reveal_timer(gv.reveal_delay) 
 
-                
         elif event.event_type == 'up': 
             if keyboard.is_modifier(event.name):
                 if 'right ' in event.name: event.name = event.name[6:]
