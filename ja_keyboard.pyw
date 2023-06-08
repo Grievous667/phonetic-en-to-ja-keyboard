@@ -326,7 +326,8 @@ class _Language():
                 elif gv.katakana_mode == True: keyboard.write(jp_symbols[1])
 
     def process_input(event): 
-        modified_event = ''.join(_Language.input_modifiers) + event.name 
+        if keyboard.is_modifier(event.name): modified_event = event.name 
+        else: modified_event = ''.join(_Language.input_modifiers) + event.name 
         if event.event_type == 'down':
             if event.name != 'space':
                 _Language.reset_kanji()
@@ -334,8 +335,7 @@ class _Language():
                 _Language.cycle_valid_kanji()
                 return 
 
-            if keyboard.is_modifier(event.name): 
-                keyboard.send(event.name, True, False)
+            if keyboard.is_modifier(event.name):
                 _Language.input_modifiers.append(event.name + '+')
                 return
 
@@ -371,20 +371,21 @@ class _Language():
                 elif modified_event == 'backspace':
                     if _Language.working_string == '': keyboard.send(modified_event)
                     else: _Language.working_string = _Language.working_string[:-1]; _Language.latin_to_type = _Language.latin_to_type[:-1]
-                elif modified_event == 'space' or 'ctrl+backspace':
+                elif modified_event == 'space' or modified_event == 'ctrl+backspace':
                     if _Language.working_string == '': keyboard.send(modified_event)
                     else: _Language.set_working_string('', True)
                 else: 
-                    keyboard.send(modified_event, True, False)
-            
+                    keyboard.send(modified_event)
+            gv.tool_tip.destroy()
+            gv.tool_tip = tt.ToolTip(_Language.working_string)
+        
         elif event.event_type == 'up':
-            keyboard.send(modified_event, False, True)
             if keyboard.is_modifier(event.name):
-                try: _Language.input_modifiers.remove(event.name + '+')
+                try: _Language.input_modifiers.remove(modified_event + '+')
                 except ValueError: _Language.input_modifiers = []
-        if _Helpers.timer_thread != None:
-            _Helpers.timer_thread.cancel()
-        _Helpers.start_reveal_timer(gv.reveal_delay)
+            if _Helpers.timer_thread != None and _Language.input_modifiers == []:
+                _Helpers.timer_thread.cancel()
+            _Helpers.start_reveal_timer(gv.reveal_delay) 
 
 
 def switch():  # Switch between hirigana and katakana translation modes. 
