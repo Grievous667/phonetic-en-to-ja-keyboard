@@ -380,9 +380,9 @@ class _Language():
             if keyboard.is_modifier(event.name):
                 try: _Language.input_modifiers.remove(event.name + '+')
                 except ValueError: _Language.input_modifiers = []
-        if _Helpers.timer_thread != None:
-            _Helpers.timer_thread.cancel()
-        _Helpers.start_reveal_timer(gv.reveal_delay)
+            if _Helpers.timer_thread != None:
+                _Helpers.timer_thread.cancel()
+            _Helpers.start_reveal_timer(gv.reveal_delay)
 
 
 def switch():  # Switch between hirigana and katakana translation modes. 
@@ -397,6 +397,7 @@ def enable_disable():  # Enable/disable the translation function
 
 def start(switch_hotkey:str=gv.switch_hotkey,toggle_hotkey:str=gv.toggle_hotkey, exit_hotkey:str=gv.exit_hotkey,reveal_delay=gv.reveal_delay): 
     gv.reveal_delay = reveal_delay
+    if gv.reveal_delay >= 0: gv.reveal_delay = .001
     _Helpers.add_hotkeys(switch_hotkey=switch_hotkey, toggle_hotkey=toggle_hotkey, exit_hotkey=exit_hotkey)
     _Helpers.add_hooks()
     keyboard.wait(gv.exit_hotkey)
