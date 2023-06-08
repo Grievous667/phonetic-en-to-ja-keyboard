@@ -335,7 +335,9 @@ class _Language():
                 return 
 
             if keyboard.is_modifier(event.name): 
+                keyboard.send(event.name, True, False)
                 _Language.input_modifiers.append(event.name + '+')
+                return
 
             elif len(event.name) == 1 and 'ctrl+' not in _Language.input_modifiers: 
                 _Language.working_string += event.name
@@ -380,9 +382,9 @@ class _Language():
             if keyboard.is_modifier(event.name):
                 try: _Language.input_modifiers.remove(event.name + '+')
                 except ValueError: _Language.input_modifiers = []
-            if _Helpers.timer_thread != None:
-                _Helpers.timer_thread.cancel()
-            _Helpers.start_reveal_timer(gv.reveal_delay)
+        if _Helpers.timer_thread != None:
+            _Helpers.timer_thread.cancel()
+        _Helpers.start_reveal_timer(gv.reveal_delay)
 
 
 def switch():  # Switch between hirigana and katakana translation modes. 
