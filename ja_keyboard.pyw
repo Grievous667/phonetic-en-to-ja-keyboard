@@ -1,4 +1,5 @@
 import keyboard
+import winTip as tt
 from threading import Timer
 
 class gv:
@@ -6,6 +7,7 @@ class gv:
     hirigana_mode = True  # Which language to translate
     katakana_mode = False  # Which language to translate
     translate_bool = True  # Whether or not to translate
+    tool_tip = tt.ToolTip('')
     processed_keys = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '/', '-', '~', '[', ']', ',', '.', 'space', 'enter', 'backspace', 'ctrl', 'shift', 'left', 'right', 'up', 'down', 'tab', 'delete']
     hooked_keys = []
     reveal_delay = 1
@@ -276,7 +278,8 @@ class _Helpers():
         _Helpers.timer_thread = Timer(delay, function=lambda: _Helpers.timer_trigger(delay))
         _Helpers.timer_thread.start()
     def timer_trigger(delay): 
-        keyboard.write(_Language.latin_to_type)
+        for c in _Language.latin_to_type:
+            keyboard.send(c, True, False)
         _Language.typed_latin += _Language.latin_to_type
         _Language.latin_to_type = ''
         
@@ -285,6 +288,10 @@ class _Language():
     active_kanji_keys = []
     kanji_index = 0
     input_modifiers = []
+    sent_modified = []
+    modified_index = 0
+    liminal_index = 0
+    liminal_keyups = []
     working_string = ''
     latin_to_type = ''
     typed_latin = ''
@@ -324,7 +331,10 @@ class _Language():
                 _Language.latin_to_type = ''
                 if len(jp_symbols) == 1 or gv.hirigana_mode == True: keyboard.write(jp_symbols[0])
                 elif gv.katakana_mode == True: keyboard.write(jp_symbols[1])
-
+                gv.tool_tip.destroy()
+            
+    
+    
     def process_input(event): 
         if keyboard.is_modifier(event.name): modified_event = event.name 
         else: modified_event = ''.join(_Language.input_modifiers) + event.name 
@@ -378,6 +388,7 @@ class _Language():
                     keyboard.send(modified_event)
             gv.tool_tip.destroy()
             gv.tool_tip = tt.ToolTip(_Language.working_string)
+            
         
         elif event.event_type == 'up':
             if keyboard.is_modifier(event.name):
@@ -399,9 +410,12 @@ def enable_disable():  # Enable/disable the translation function
     _Language.set_working_string('', True)
 
 def start(switch_hotkey:str=gv.switch_hotkey,toggle_hotkey:str=gv.toggle_hotkey, exit_hotkey:str=gv.exit_hotkey,reveal_delay=gv.reveal_delay): 
-    gv.reveal_delay = reveal_delay
-    if gv.reveal_delay >= 0: gv.reveal_delay = .001
+    if reveal_delay <= .001: gv.reveal_delay = .001 
+    else: gv.reveal_delay = reveal_delay
+    print(gv.reveal_delay)
     _Helpers.add_hotkeys(switch_hotkey=switch_hotkey, toggle_hotkey=toggle_hotkey, exit_hotkey=exit_hotkey)
     _Helpers.add_hooks()
     keyboard.wait(gv.exit_hotkey)
-start()
+start(reveal_delay=1)
+
+
