@@ -412,7 +412,6 @@ def enable_disable():  # Enable/disable the translation function
 def start(switch_hotkey:str=gv.switch_hotkey,toggle_hotkey:str=gv.toggle_hotkey, exit_hotkey:str=gv.exit_hotkey,reveal_delay=gv.reveal_delay): 
     if reveal_delay <= .001: gv.reveal_delay = .001 
     else: gv.reveal_delay = reveal_delay
-    print(gv.reveal_delay)
     _Helpers.add_hotkeys(switch_hotkey=switch_hotkey, toggle_hotkey=toggle_hotkey, exit_hotkey=exit_hotkey)
     _Helpers.add_hooks()
     keyboard.wait(gv.exit_hotkey)
