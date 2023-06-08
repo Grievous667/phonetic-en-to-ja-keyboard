@@ -1,15 +1,21 @@
 import keyboard
-import time
+from threading import Timer
 
-
-class var:
+class gv:
+    running = True
     hirigana_mode = True  # Which language to translate
     katakana_mode = False  # Which language to translate
     translate_bool = True  # Whether or not to translate
-    keystroke_queue = []
-    working_string = ''
+    processed_keys = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '/', '-', '~', '[', ']', ',', '.', 'space', 'enter', 'backspace', 'ctrl', 'shift', 'left', 'right', 'up', 'down', 'tab', 'delete']
+    hooked_keys = []
+    reveal_delay = 1
 
-    translation_dict = {
+    switch_hotkey = 'shift+space'
+    toggle_hotkey = 'ctrl+space'
+    exit_hotkey = 'esc'
+
+class const:
+    TRANSLATION_DICT = {
         # Monographs 
         'a': ['あ', 'ア'],
         'i': ['い', 'イ'],
@@ -151,22 +157,38 @@ class var:
         '~yo': ['ょ', 'ョ'],
         '~': ['っ', 'ッ'],
         
-        '<DOUBLE_CONSONANTS>': {
-            'bb': ['っb', 'ッb'],
-            'cc': ['っc', 'ッc'],
-            'ff': ['っf', 'ッf'],
-            'gg': ['っg', 'ッg'],
-            'hh': ['っh', 'ッh'],
-            'jj': ['っj', 'ッj'],
-            'kk': ['っk', 'ッk'],
-            'mm': ['っm', 'ッm'],
-            'pp': ['っp', 'ッp'],
-            'rr': ['っr', 'ッr'],
-            'ss': ['っs', 'ッs'],
-            'tt': ['っt', 'ッt'],
-            'ww': ['っw', 'ッw'],
-            'yy': ['っy', 'ッy'],
-            'zz': ['っz', 'ッz'],
+        '<DOUBLES>': {
+            'bb': ['っ', 'ッ'],
+            'cc': ['っ', 'ッ'],
+            'ff': ['っ', 'ッ'],
+            'gg': ['っ', 'ッ'],
+            'hh': ['っ', 'ッ'],
+            'jj': ['っ', 'ッ'],
+            'kk': ['っ', 'ッ'],
+            'mm': ['っ', 'ッ'],
+            'pp': ['っ', 'ッ'],
+            'rr': ['っ', 'ッ'],
+            'ss': ['っ', 'ッ'],
+            'tt': ['っ', 'ッ'],
+            'ww': ['っ', 'ッ'],
+            'zz': ['っ', 'ッ'],
+            'yy': ['っ', 'ッ'],
+            
+            'nc': ['ん', 'ン'],
+            'nb': ['ん', 'ン'],
+            'nf': ['ん', 'ン'],
+            'ng': ['ん', 'ン'],
+            'nh': ['ん', 'ン'],
+            'nj': ['ん', 'ン'],
+            'nk': ['ん', 'ン'],
+            'nm': ['ん', 'ン'],
+            'np': ['ん', 'ン'],
+            'nr': ['ん', 'ン'],
+            'ns': ['ん', 'ン'],
+            'nt': ['ん', 'ン'],
+            'nw': ['ん', 'ン'],
+            'nz': ['ん', 'ン'], 
+            'ny': ['ん', 'ン'],
         },
         '<KANJI>': { # Kanji
             # Numbers
@@ -201,17 +223,24 @@ class var:
             '/toshi': ['歳'],
             '/yo': ['読'], '/satoru': ['読'],    
             '/ji': ['時'], '/toki': ['時'],
-            '//go': ['語'],
+            '/go-1': ['語'],
+            '/sama': ['様'],
+            '/ko': ['子'],
+            
             
             '/manabu': ['学'],
 
             # Full words
-            '/atarashi': ['新しい'],
+            '/atarashii': ['新しい'],
             '/furui':['古い'],
             '/uta':['歌'],
             '/okiniiri':['お気に入り'],
             '/subarashii': ['素晴らしい'],
             '/nihongo': ['日本語'],
+            '/daigakusei': ['大学生'],
+            '/chiisai': ['小さい'],
+            '/kaimasu': ['買います'],
+            '/doyoubi': ['土曜日'],
 
             # Cities / places
             '/nihon': ['日本'],
@@ -221,68 +250,153 @@ class var:
             # Misc
             '/yama': ['山'],
             '/guchi': ['口'],
+            '/ta': ['田'],
+            '/naka': ['中'],
         },
     }
 
-def execute_queue(): # Perform queued keystrokes
-    time.sleep(.005)
-    for key in var.keystroke_queue:
-        if key == 'backspace' or key == 'space': keyboard.send(key)
-        else: keyboard.write(key)
-    var.keystroke_queue = []
 
-def analyze(wking_string, key_event):
-    if wking_string in var.translation_dict.keys():
-        mora_to_jp_character(wking_string, var.translation_dict[wking_string])
-        return ''
-    elif wking_string in var.translation_dict['<DOUBLE_CONSONANTS>'].keys():
-        mora_to_jp_character(wking_string, var.translation_dict['<DOUBLE_CONSONANTS>'][wking_string])
-        return wking_string[-1]
-    elif wking_string in var.translation_dict['<KANJI>'].keys():
-        if key_event == 'space':
-            var.keystroke_queue.append('backspace')
-            mora_to_jp_character(wking_string, var.translation_dict['<KANJI>'][wking_string])
-            return ''
-        else: return wking_string
-    elif wking_string != '' and key_event == 'space': var.keystroke_queue.append('backspace'); execute_queue(); return ''
-    else: return wking_string
-
-def mora_to_jp_character(mora, jp_symbols): # Given a mora and its translation, add the appropriate actions to the queue.
-    if var.translate_bool == True:
-        if type(jp_symbols) == list:
-            for i in range(len(mora)): var.keystroke_queue.append('backspace')
-            if len(jp_symbols) == 1 or var.hirigana_mode == True: var.keystroke_queue.append(jp_symbols[0])
-            elif var.katakana_mode == True: var.keystroke_queue.append(jp_symbols[1])
-        execute_queue()
+class _Helpers():
+    timer_thread = None
+    def add_hooks():
+        for k in gv.processed_keys: keyboard.hook_key(k, callback=lambda e: _Language.process_input(e), suppress=True)
+    def remove_hooks():
+        keyboard._listener.start_if_necessary()
+        keyboard._listener.blocking_keys.clear()
+        keyboard._listener.nonblocking_keys.clear()
+        del keyboard._listener.blocking_hooks[:]
+        del keyboard._listener.handlers[:]
+    def add_hotkeys(switch_hotkey=gv.switch_hotkey, toggle_hotkey=gv.toggle_hotkey, exit_hotkey=gv.exit_hotkey):
+        gv.switch_hotkey = switch_hotkey
+        gv.toggle_hotkey = toggle_hotkey
+        gv.exit_hotkey = exit_hotkey
+        keyboard.add_hotkey(switch_hotkey, lambda: switch()) # Trigger the hirigana/katakana switch
+        keyboard.add_hotkey(toggle_hotkey, lambda: enable_disable()) # Enable/disable translation while still running the script
+    def start_reveal_timer(delay):
+        _Helpers.timer_thread = Timer(delay, function=lambda: _Helpers.timer_trigger(delay))
+        _Helpers.timer_thread.start()
+    def timer_trigger(delay): 
+        keyboard.write(_Language.latin_to_type)
+        _Language.typed_latin += _Language.latin_to_type
+        _Language.latin_to_type = ''
         
 
+class _Language():
+    active_kanji_keys = []
+    kanji_index = 0
+    input_modifiers = []
+    working_string = ''
+    latin_to_type = ''
+    typed_latin = ''
+
+    def get_valid_kanji():
+        _Language.reset_kanji()
+        _Language.active_kanji_keys.append(_Language.working_string)
+        for key in const.TRANSLATION_DICT['<KANJI>']:
+            if _Language.working_string + '-' in key and key != _Language.working_string:
+                _Language.active_kanji_keys.append(key)
+
+    def cycle_valid_kanji():
+        for c in range(len(const.TRANSLATION_DICT['<KANJI>'][_Language.active_kanji_keys[_Language.kanji_index]][0])):
+            keyboard.send('backspace')
+        try: 
+            _Language.kanji_index += 1
+            keyboard.write(const.TRANSLATION_DICT['<KANJI>'][_Language.active_kanji_keys[_Language.kanji_index]][0])
+        except IndexError: 
+            _Language.kanji_index = 0
+            keyboard.write(const.TRANSLATION_DICT['<KANJI>'][_Language.active_kanji_keys[_Language.kanji_index]][0])
+    
+    def reset_kanji():
+        _Language.active_kanji_keys = []
+        _Language.kanji_index = 0
+
+    def set_working_string(text, include_latin_str=True):
+        _Language.working_string = text
+        if include_latin_str == True:
+            _Language.typed_latin = text
+        
+    def execute_translation(jp_symbols): # Execute a translation based on the translation mode
+        if gv.translate_bool == True:
+            if type(jp_symbols) == list:
+                for c in _Language.typed_latin:
+                    keyboard.send('backspace')
+                _Language.typed_latin = ''
+                _Language.latin_to_type = ''
+                if len(jp_symbols) == 1 or gv.hirigana_mode == True: keyboard.write(jp_symbols[0])
+                elif gv.katakana_mode == True: keyboard.write(jp_symbols[1])
+
+    def process_input(event): 
+        modified_event = ''.join(_Language.input_modifiers) + event.name 
+        if event.event_type == 'down':
+            if event.name != 'space':
+                _Language.reset_kanji()
+            elif len(_Language.active_kanji_keys) > 1 and event.name == 'space':
+                _Language.cycle_valid_kanji()
+                return 
+
+            if keyboard.is_modifier(event.name): 
+                _Language.input_modifiers.append(event.name + '+')
+
+            elif len(event.name) == 1 and 'ctrl+' not in _Language.input_modifiers: 
+                _Language.working_string += event.name
+                _Language.latin_to_type += event.name
+
+                if _Language.working_string in const.TRANSLATION_DICT.keys():
+                    _Language.execute_translation(const.TRANSLATION_DICT[_Language.working_string])
+                    _Language.set_working_string('', True)
+
+                elif _Language.working_string in const.TRANSLATION_DICT['<DOUBLES>'].keys():
+                    _Language.execute_translation( const.TRANSLATION_DICT['<DOUBLES>'][_Language.working_string])
+                    _Language.working_string = _Language.working_string[-1]
+                    _Language.latin_to_type = _Language.working_string
+                    
+
+            elif event.name == 'space' and _Language.working_string in const.TRANSLATION_DICT['<KANJI>'].keys():
+                _Language.get_valid_kanji()
+                _Language.execute_translation(const.TRANSLATION_DICT['<KANJI>'][_Language.working_string])
+                _Language.set_working_string('', True)
+
+            else:
+                _Language.typed_latin = ''
+                if modified_event == gv.switch_hotkey: 
+                    switch()
+                elif modified_event == gv.toggle_hotkey:   
+                    enable_disable()
+                elif modified_event == 'enter':
+                    if _Language.working_string == '': keyboard.send(modified_event, True, False)
+                    else: keyboard.write(_Language.working_string) ; _Language.set_working_string('', True)
+                elif modified_event == 'backspace':
+                    if _Language.working_string == '': keyboard.send(modified_event)
+                    else: _Language.working_string = _Language.working_string[:-1]; _Language.latin_to_type = _Language.latin_to_type[:-1]
+                elif modified_event == 'space' or 'ctrl+backspace':
+                    if _Language.working_string == '': keyboard.send(modified_event)
+                    else: _Language.set_working_string('', True)
+                else: 
+                    keyboard.send(modified_event, True, False)
+            
+        elif event.event_type == 'up':
+            keyboard.send(modified_event, False, True)
+            if keyboard.is_modifier(event.name):
+                try: _Language.input_modifiers.remove(event.name + '+')
+                except ValueError: _Language.input_modifiers = []
+        if _Helpers.timer_thread != None:
+            _Helpers.timer_thread.cancel()
+        _Helpers.start_reveal_timer(gv.reveal_delay)
+
+
 def switch():  # Switch between hirigana and katakana translation modes. 
-    if var.hirigana_mode == True: var.hirigana_mode = False; var.katakana_mode = True
-    elif var.katakana_mode == True: var.katakana_mode = False; var.hirigana_mode = True
-    keyboard.call_later(lambda: keyboard.send('backspace'),delay=.01)
+    if gv.hirigana_mode == True: gv.hirigana_mode = False; gv.katakana_mode = True
+    elif gv.katakana_mode == True: gv.katakana_mode = False; gv.hirigana_mode = True
+
 
 def enable_disable():  # Enable/disable the translation function
-    if var.translate_bool == True: var.translate_bool = False
-    elif var.translate_bool == False: var.translate_bool = True
-    var.working_string = ''
-    var.keystroke_queue = []
+    if gv.translate_bool == True: gv.translate_bool = False ; _Helpers.remove_hooks()
+    elif gv.translate_bool == False: gv.translate_bool = True ; _Helpers.add_hooks()
+    _Language.set_working_string('', True)
 
-def run(switch_hotkey:str='shift+space',enable_disable_hotkey:str='ctrl+space'): 
-    var.working_string = ''
-    keyboard.add_hotkey(switch_hotkey, lambda: switch()) # Trigger the hirigana/katakana switch
-    keyboard.add_hotkey(enable_disable_hotkey, lambda: enable_disable()) # Enable/disable translation while still running the script
-    mainloop()
-
-def mainloop():
-    while True:
-        key_event = keyboard.read_event()
-        if key_event.event_type == 'down':
-            if key_event.name == 'esc': break
-            if var.translate_bool == True and keyboard.is_pressed('ctrl') == False:
-                if len(key_event.name) == 1:
-                    var.working_string += key_event.name
-                    var.working_string = analyze(var.working_string, key_event)
-                elif key_event.name == 'backspace': var.working_string = var.working_string[:-1]
-                elif key_event.name == 'space': analyze(var.working_string, key_event.name); var.working_string = ''
-                else: var.working_string = ''
-run()
+def start(switch_hotkey:str=gv.switch_hotkey,toggle_hotkey:str=gv.toggle_hotkey, exit_hotkey:str=gv.exit_hotkey,reveal_delay=gv.reveal_delay): 
+    gv.reveal_delay = reveal_delay
+    _Helpers.add_hotkeys(switch_hotkey=switch_hotkey, toggle_hotkey=toggle_hotkey, exit_hotkey=exit_hotkey)
+    _Helpers.add_hooks()
+    keyboard.wait(gv.exit_hotkey)
+start()
