@@ -220,7 +220,7 @@ class LatinToJapanese:
             '/hyaku': ['百'],
             '/sen': ['千'],
             
-            # Common 
+         
             '/hito': ['人'],
             '/ten': ['天'],
             '/dai': ['大'], '/oo': ['大'],
@@ -240,10 +240,7 @@ class LatinToJapanese:
             '/sama': ['様'],
             '/manabu': ['学'],
             '/kai': ['間'],
-
-
-            # Full words
-            '/bi': ['日'], '/ni-1': ['日'], # Day# Day
+            '/bi': ['日'], '/ni-1': ['日'], # Day
             '/ima': ['今'], # Now
             '/kyo': ['今日'], # Today
             '/mizu': ['水'], # Water
