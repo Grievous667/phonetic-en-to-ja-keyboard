@@ -4,7 +4,17 @@ Translate English/Latin syllables to equivalent Japanese Hiragana or Katakana ch
 INSTALLATION
 
 1. Download the repository and extract it to a unique folder.
-2. Install the keyboard module. If you have pip, simply enter `pip install keyboard` into the terminal. If you need an in-depth explanation on installing python libraries, you can refer to this webpage: https://docs.python.org/3/installing/index.html
+2. Check that you have the required libraries installed:
+   - keyboard
+   - pygame
+   - win32gui
+   - win32con
+   - ctypes
+   - os
+   - mouse
+   - time
+   - win32clipboard
+   - threading
 3. In the keyboard module's main folder, replace the file named `__init__.py` with the file of the same name in this repository. The file location will be relative to your Python install location, so find that and navigate as follows (keeping in mind 'Python310' will be replaced with whatever Python version you're running): `Python\Python310\Lib\site-packages\keyboard`.
 4. That's the installation done. To use the script, run it with python or from the terminal.
 
